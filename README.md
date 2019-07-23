@@ -1,2 +1,2 @@
-# easy-ourse
+# EasyCourse
 основы основ C#
