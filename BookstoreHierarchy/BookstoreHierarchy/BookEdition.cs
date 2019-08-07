@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace BookstoreHierarchy
 {
+    /// <summary>
+    /// Издание
+    /// </summary>
     public class BookEdition
     {
         public enum BookType
@@ -37,22 +41,29 @@ namespace BookstoreHierarchy
         public string Name;
         public List<Author> Authors;
         public BookType Type;
-        public BookGenre Genre;
+        public List<BookGenre> Genre;
         public decimal Price;
         public DateTime PublicationDate;
         public string Adress;
-        public short Сirculation;
+        public short Circulation;
 
-        public BookEdition(string name, List<Author> authors, BookType type, BookGenre genre, decimal price, DateTime publicationDate, string adress, short сirculation)
+        public BookEdition(string name, List<Author> authors, BookType type, List<BookGenre> genre, decimal price, DateTime publicationDate, string adress, short circulation)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Authors = authors ?? throw new ArgumentNullException(nameof(authors));
             Type = type;
-            Genre = genre;
+            Genre = genre ?? throw new ArgumentNullException(nameof(genre));
             Price = price;
             PublicationDate = publicationDate;
             Adress = adress ?? throw new ArgumentNullException(nameof(adress));
-            Сirculation = сirculation;
+            Circulation = circulation;
+        }
+
+        public override string ToString()
+        {
+            
+
+            return $"{Name} | {string.Join(", ", Authors.Select(x => x.ToString()).ToList())} {Type} {string.Join(", ", Genre.ToArray())} {Price} {PublicationDate} {Adress} {Circulation}";
         }
     }
 }

@@ -3,14 +3,16 @@ using System.Collections.Generic;
 
 namespace BookstoreHierarchy
 {
+    /// <summary>
+    /// Издательство
+    /// </summary>
     public class PublishingHouse
     {
         public string Name;
         public string City;
         public string Country;
         public string Adress;
-        public List<BookEdition> BookEditions;
-        private Dictionary<string, short> NumberOfBooksInCirculation;
+        public Dictionary<string, ReleasedBookEdition> PrintedBookEditions;
 
         public PublishingHouse(string name, string city, string country, string adress)
         {
@@ -18,34 +20,56 @@ namespace BookstoreHierarchy
             City = city ?? throw new ArgumentNullException(nameof(city));
             Country = country ?? throw new ArgumentNullException(nameof(country));
             Adress = adress ?? throw new ArgumentNullException(nameof(adress));
-            BookEditions = new List<BookEdition>();
-            NumberOfBooksInCirculation = new Dictionary<string, short>();
+            PrintedBookEditions = new Dictionary<string, ReleasedBookEdition>();
         }
 
-        public void PublishBooks(string bookName, List<Author> authors, BookEdition.BookType type, BookEdition.BookGenre genre, decimal price, DateTime publicationDate, string adress, short сirculation)
+        public void PublishBooks(string bookName, List<Author> authors, BookEdition.BookType type, List<BookEdition.BookGenre> genre, decimal price, DateTime publicationDate, short сirculation)
         {
-            BookEditions.Add(new BookEdition(bookName, authors, type, genre, price, publicationDate, adress, сirculation));
-            NumberOfBooksInCirculation.Add(bookName, сirculation);
+            PrintedBookEditions.Add(bookName, new ReleasedBookEdition(new BookEdition(bookName, authors, type, genre, price, publicationDate, Adress, сirculation), сirculation));
         }
 
-        public short GetNumberOfBooks(string bookName)
+
+        public int GetNumberOfBooks(string bookName)
         {
-            return NumberOfBooksInCirculation[bookName];
-        }
+            var printedEdition = PrintedBookEditions[bookName];
 
-        public BookEdition PutBatchOfBooksInStore(string bookName, short numberOfBooks)
-        {
-            var currentNumber = NumberOfBooksInCirculation[bookName];
-
-
-            if (currentNumber < numberOfBooks)
+            if (printedEdition == null)
             {
-                Console.WriteLine("");
+                Console.WriteLine("Издание не найдено!");
+                return -1;
+            }
+
+            return printedEdition.amountOfBooks;
+        }
+
+        /// <summary>
+        /// Получение партии книг
+        /// </summary>
+        /// <param name="bookName"></param>
+        /// <param name="numberOfBooks"></param>
+        /// <returns></returns>
+        public BookEdition GettingBatchOfBooks(string bookName, int amountOfBooks)
+        {
+            var printedEdition = PrintedBookEditions[bookName];
+            if (printedEdition == null)
+            {
+                Console.WriteLine("Издание не найдено!");
                 return null;
             }
 
-            return null;
+            var currentNumber = GetNumberOfBooks(bookName);
+            if (currentNumber == -1)
+            {
+                return null;
+            }
+            else if (currentNumber < amountOfBooks)
+            {
+                Console.WriteLine("Запрашиваемое количество больше имеющегося в издательстве.");
+                return null;
+            }
 
+            printedEdition.amountOfBooks = printedEdition.amountOfBooks - amountOfBooks;
+            return printedEdition.bookEdition;
         }
     }
 }
