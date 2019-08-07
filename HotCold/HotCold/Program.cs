@@ -13,11 +13,11 @@ namespace HotCold
 
             var exit = false;
             var firstStep = true;
-
+            bool successParse;
 
             while (!exit)
             {
-                var successParse = false;
+                successParse = false;
                 while (!successParse)
                 {
                     Console.WriteLine("Введите число:");
@@ -41,7 +41,7 @@ namespace HotCold
                     Console.WriteLine("\nУспех");
 
                     Console.WriteLine("\nПовторить?(y/n)");
-                    var successInput = false;
+                    bool successInput = false;
                     while (!successInput)
                     {
                         var input = Console.ReadLine();
