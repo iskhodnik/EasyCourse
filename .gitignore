@@ -1,3 +1,7 @@
-/HotCold/.vs/HotCold/v15
-/HotCold/HotCold/obj
-/HotCold/HotCold/bin
+*.suo
+*.user
+*.vs
+_ReSharper.*
+bin
+obj
+packages
