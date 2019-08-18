@@ -29,5 +29,13 @@ namespace BookstoreHierarchy
 
         public string GetPhone() => string.Format("# (###) ###-####}", phone);
         public string GetAdress() => adress;
+
+        public void SetSurname(string surname)
+        {
+            if(!string.IsNullOrWhiteSpace(surname))
+            {
+                Surname = surname;
+            }
+        }
     }
 }
