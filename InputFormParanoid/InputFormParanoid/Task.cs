@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace InputFormParanoid
 {
@@ -48,6 +49,20 @@ namespace InputFormParanoid
         public void SetDescription(string description)
         {
             this.description = description;
+        }
+
+        public Dictionary<TaskFields, string> GetAllField()
+        {
+            var fields = new Dictionary<TaskFields, string>
+            {
+                { TaskFields.name, name },
+                { TaskFields.startDate, startDate.ToString() },
+                { TaskFields.endDate, endDate.ToString() },
+                { TaskFields.estimate, estimate.ToString() },
+                { TaskFields.description, description }
+            };
+
+            return fields;
         }
     }
 }

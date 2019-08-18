@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace InputFormParanoid
 {
@@ -46,63 +47,100 @@ namespace InputFormParanoid
 
             foreach (var value in newTaskValues)
             {
-                try
+                switch (value.Key)
                 {
-                    switch (value.Key)
-                    {
-                        case Task.TaskFields.name:
-                            task.SetName(value.Value);
-                            break;
+                    case Task.TaskFields.name:
+                        task.SetName(value.Value);
+                        break;
 
-                        case Task.TaskFields.startDate:
-                            task.SetStartDate(ConvertToDateTime(value.Value));
-                            break;
+                    case Task.TaskFields.startDate:
+                        task.SetStartDate(ParseValueToDateTime(Task.TaskFields.startDate.ToString(), value.Value));
+                        break;
 
-                        case Task.TaskFields.endDate:
-                            break;
+                    case Task.TaskFields.endDate:
+                        task.SetEndDate(ParseValueToDateTime(Task.TaskFields.endDate.ToString(), value.Value));
+                        break;
 
-                        case Task.TaskFields.estimate:
-                            break;
+                    case Task.TaskFields.estimate:
+                        task.SetEstimate(ParseValueToInt(Task.TaskFields.estimate.ToString(), value.Value));
+                        break;
 
-                        case Task.TaskFields.description:
-                            break;
-                    }
-                }
-                catch (Exception)
-                {
-
+                    case Task.TaskFields.description:
+                        task.SetDescription(value.Value);
+                        break;
                 }
             }
+
+            tasks.Add(task.GetName(), task);
         }
 
-        private DateTime ConvertToDateTime(string value)
+        private DateTime ParseValueToDateTime(string key, string value)
         {
-            DateTime convertedDate;
+            DateTime convertedValue;
             try
             {
-                convertedDate = Convert.ToDateTime(value);
-                //Console.WriteLine("'{0}' converts to {1} {2} time.",
-                //                  value, convertedDate,
-                //                  convertedDate.Kind.ToString());
-                return convertedDate;
+                convertedValue = DateTime.Parse(value);
+                return convertedValue;
             }
             catch (FormatException)
             {
-                Console.WriteLine($"'{value}' не верный формат даты.");
+                Console.WriteLine($"У поля '{key}' введён неневерный формат даты.");
+                Console.WriteLine($"Введите '{key}' повторно:");
                 var newValue = ImputTaskValue();
-                ConvertToDateTime(newValue);
+                return ParseValueToDateTime(key, newValue);
             }
-
-            throw new ArgumentNullException();
         }
 
+        private int ParseValueToInt(string key, string value)
+        {
+            int convertedValue;
+            try
+            {
+                convertedValue = int.Parse(value);
+
+                if (convertedValue <= 0)
+                {
+                    throw new LessZeroException(key);
+                }
+
+                return convertedValue;
+            }
+            catch (SystemException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine($"Введите '{key}' повторно:");
+                var newValue = ImputTaskValue();
+                return ParseValueToInt(key, newValue);
+            }
+        }
 
         public void CreateTask()
         {
             ImputTaskValues();
-
             ParseTaskValues();
         }
 
+        public void ShowTasks()
+        {
+            if (tasks.Count == 0)
+            {
+                Console.WriteLine("Созданных задач нет!");
+                return;
+            }
+
+            var random = new Random();
+
+            foreach (var task in tasks)
+            {
+                var fields = task.Value.GetAllField();
+
+                var randNumbers = Enumerable.Range(0, fields.Count).OrderBy(t => random.Next()).ToArray();
+
+                foreach (var number in randNumbers)
+                {
+                    Console.WriteLine($"{((Task.TaskFields)number).ToString()} - {fields[(Task.TaskFields)number]}");
+                }
+            }
+        }
     }
 }

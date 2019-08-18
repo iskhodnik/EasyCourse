@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace InputFormParanoid
 {
@@ -9,7 +8,9 @@ namespace InputFormParanoid
         {
             var taskManager = new TaskManager();
             taskManager.CreateTask();
+            taskManager.ShowTasks();
 
+            Console.ReadKey();
         }
     }
 }
