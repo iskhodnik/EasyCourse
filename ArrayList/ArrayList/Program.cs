@@ -18,15 +18,16 @@ namespace ArrayList
             myArr.Add("3");
             myArr.Add("2");
             myArr.Add("1");
-            Array.ForEach(myArr.arrayList, Console.Write);
+
+            myArr.ForEach(Console.WriteLine);
             Console.WriteLine();
 
             myArr.Remove(3);
-            Array.ForEach(myArr.arrayList, Console.Write);
+            myArr.ForEach(Console.WriteLine);
             Console.WriteLine();
 
             myArr.Remove("1");
-            Array.ForEach(myArr.arrayList, Console.Write);
+            myArr.ForEach(Console.WriteLine);
             Console.WriteLine();
 
             Console.WriteLine(myArr.IndexOf("5"));
@@ -38,6 +39,12 @@ namespace ArrayList
             Console.WriteLine(myArr.Get(3));
 
             Console.ReadKey();
+
         }
     }
+
+
+    
+    
+
 }

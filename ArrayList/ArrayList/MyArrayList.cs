@@ -4,11 +4,13 @@ namespace ArrayList
 {
     public class MyArrayList<T>
     {
-        public T[] arrayList { private set; get; }
+        private T[] arrayList;
+        public int Count { private set; get; }
+        private const int DEFAULT_SIZE = 10;
 
         public MyArrayList()
         {
-            arrayList = new T[0];
+            arrayList = new T[DEFAULT_SIZE];
         }
 
         public MyArrayList(T[] arrayList)
@@ -18,32 +20,45 @@ namespace ArrayList
 
         public void Add(T element)
         {
-            var obj = arrayList;
-            Array.Resize(ref obj, arrayList.Length + 1);
-            obj[obj.Length - 1] = element;
-            arrayList = obj;
+            TryResize(Count + 1);
+            arrayList[Count] = element;
+            Count++;
         }
+
+        private void TryResize(int minSize)
+        {
+            if (minSize > arrayList.Length)
+            {
+                var obj = arrayList;
+                int newSize = arrayList.Length + (arrayList.Length / 2);
+
+                if (newSize < minSize)
+                {
+                    newSize = minSize;
+                }
+
+                Array.Resize(ref obj, newSize);
+                arrayList = obj;
+            }
+        }
+
 
         public void Remove(int id)
         {
-            var newList = new T[arrayList.Length - 1];
-            for (int i = 0; i < id; i++)
-            {
-                newList[i] = arrayList[i];
-            }
-            for (int i = id; i < newList.Length; i++)
-            {
-                newList[i] = arrayList[i + 1];
-            }
-            arrayList = newList;
+            var newList = arrayList;
 
+            for (int i = id; i < Count; i++)
+            {
+                arrayList[i] = arrayList[i + 1];
+            }
+            Count--;
         }
 
         public void Remove(T element)
         {
-            for (int i = 0; i < arrayList.Length; i++)
+            for (int i = 0; i < Count; i++)
             {
-                if (arrayList[i].ToString().Equals(element.ToString()))
+                if (arrayList[i].Equals(element))
                 {
                     Remove(i);
                     i--;
@@ -53,9 +68,9 @@ namespace ArrayList
 
         public int IndexOf(T element)
         {
-            for (int i = 0; i < arrayList.Length; i++)
+            for (int i = 0; i < Count; i++)
             {
-                if (arrayList[i].ToString().Equals(element.ToString()))
+                if (arrayList[i].Equals(element))
                 {
                     return i;
                 }
@@ -72,9 +87,9 @@ namespace ArrayList
         {
             var indexes = new int[0];
 
-            for (int i = 0; i < arrayList.Length; i++)
+            for (int i = 0; i < Count; i++)
             {
-                if (arrayList[i].ToString().Equals(element.ToString()))
+                if (arrayList[i].Equals(element))
                 {
                     Array.Resize<int>(ref indexes, indexes.Length + 1);
                     indexes[indexes.Length - 1] = i;
@@ -82,6 +97,20 @@ namespace ArrayList
             }
 
             return indexes;
+        }
+
+
+        public void ForEach(Action<T> action)
+        {
+            if (action == null)
+            {
+                throw new ArgumentNullException("action");
+            }
+
+            for (int i = 0; i < Count; i++)
+            {
+                action(arrayList[i]);
+            }
         }
     }
 }
